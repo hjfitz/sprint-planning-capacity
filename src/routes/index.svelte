@@ -40,6 +40,12 @@
 		devDays: number
 		notes?: string
 	}
+	
+	const DEV_STORE_KEY = 'dev-cache'
+
+	function isWindowUndefined(): boolean {
+		return typeof window === 'undefined'
+	}
 
 	function recalculateDevDays(idx: number) {
 		const dev = developers[idx]
@@ -72,16 +78,16 @@
 		developers = developers
 	}
 
-	const DEV_STORE_KEY = 'dev-cache'
+	// todo: include on call/release numbers and dev points per day
 	function updateDevelopers() {
-		if (typeof window === 'undefined') return
+		if (isWindowUndefined()) return
 		const stringified = JSON.stringify(developers)
 		localStorage.setItem(DEV_STORE_KEY, stringified)
 	}
 
 	function getDevelopers() {
 		const defaultDevelopers = Array.from({length: 5}, developerFactory)
-		if (typeof window === 'undefined') return defaultDevelopers
+		if (isWindowUndefined()) return defaultDevelopers
 		const stored = localStorage.getItem(DEV_STORE_KEY)
 		if (stored) {
 			return JSON.parse(stored) as Developer[]
@@ -90,13 +96,17 @@
 		}
 	}
 
+	function formatDecimal(num: number): number {
+		return +num.toFixed(2)
+	}
+
 	let avgPoints = 1
 	let support = false
 	let developers = getDevelopers()
 
 	$: totalDevDays = developers.map(dev => dev.devDays).reduce((acc, cur) => acc + cur, 0)
-	$: totalWithBuffer = totalDevDays * 0.85
-	$: totalWithSupportBuffer = support ? totalWithBuffer * 0.95 : totalWithBuffer
+	$: totalWithBuffer = formatDecimal(totalDevDays * 0.85)
+	$: totalWithSupportBuffer = support ? formatDecimal(totalWithBuffer * 0.95) : totalWithBuffer
 	$: developers, updateDevelopers()
 
 </script>
