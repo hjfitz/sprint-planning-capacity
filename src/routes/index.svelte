@@ -27,6 +27,9 @@
 	<p>Average points per dev day: <input type=number bind:value={avgPoints} /></p>
 	<p>Guideline sprint points: {avgPoints * totalWithSupportBuffer}</p>
 
+	<button on:click={addDeveloper}>Add Developer</button>
+	<button on:click={removeDeveloper}>Remove Developer</button>
+
 </template>
 <script lang="ts">
 	interface Developer {
@@ -58,6 +61,15 @@
 
 	function toggleSupport() {
 		support = !support
+	}
+
+	function addDeveloper() {
+		developers = [...developers, developerFactory()]
+	}
+
+	function removeDeveloper() {
+		developers.pop()
+		developers = developers
 	}
 
 	let avgPoints = 1
