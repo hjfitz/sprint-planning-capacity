@@ -72,12 +72,31 @@
 		developers = developers
 	}
 
+	const DEV_STORE_KEY = 'dev-cache'
+	function updateDevelopers() {
+		if (typeof window === 'undefined') return
+		const stringified = JSON.stringify(developers)
+		localStorage.setItem(DEV_STORE_KEY, stringified)
+	}
+
+	function getDevelopers() {
+		const defaultDevelopers = Array.from({length: 5}, developerFactory)
+		if (typeof window === 'undefined') return defaultDevelopers
+		const stored = localStorage.getItem(DEV_STORE_KEY)
+		if (stored) {
+			return JSON.parse(stored) as Developer[]
+		} else {
+			return defaultDevelopers
+		}
+	}
+
 	let avgPoints = 1
 	let support = false
-	let developers = Array.from({length: 5}, developerFactory)
+	let developers = getDevelopers()
 
 	$: totalDevDays = developers.map(dev => dev.devDays).reduce((acc, cur) => acc + cur, 0)
 	$: totalWithBuffer = totalDevDays * 0.85
 	$: totalWithSupportBuffer = support ? totalWithBuffer * 0.95 : totalWithBuffer
+	$: developers, updateDevelopers()
 
 </script>
