@@ -19,7 +19,7 @@
 						<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysWorking} on:input={recalculateDevDaysFactory(i)} /></td>
 						<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysHoliday} on:input={recalculateDevDaysFactory(i)} /></td>
 						<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysOtherCommitment} on:input={recalculateDevDaysFactory(i)} /></td>
-						<td><p class="p-2 border-white border-2 hover:border-gray-200 cursor-not-allowed"> {dev.devDays} </p></td>
+						<td><p class="p-2 border-white border-2 hover:border-gray-200 cursor-not-allowed">{dev.devDays}</p></td>
 					</tr>
 					{/each}
 				</tbody>
@@ -37,7 +37,7 @@
 					<InfoItem text="Avg points per dev day" icon="📲">
 						<input class="border rounded px-2 py-1 mt-2 w-4/5" type=number bind:value={avgPoints} />
 					</InfoItem>
-					<InfoItem text="Guideline sprint points" icon="💻"><p class="inline" on:click={copyPoints}>{avgPoints * totalWithSupportBuffer}</p></InfoItem>
+					<InfoItem text="Guideline sprint points" icon="💻"><p class="inline" on:click={copyPoints}>{formatDecimal(avgPoints * totalWithSupportBuffer)}</p></InfoItem>
 				</div>
 			</section>
 		</section>
@@ -60,7 +60,6 @@
 		notes?: string
 	}
 	
-	const DEV_STORE_KEY = 'dev-cache'
 
 	function getTotalPoints(): number {
 		return avgPoints * totalWithSupportBuffer
@@ -107,13 +106,17 @@
 		developers = developers
 	}
 
-	// todo: include on call/release numbers and dev points per day
-	function updateDevelopers() {
-		if (isWindowUndefined()) return
-		const stringified = JSON.stringify(developers)
-		localStorage.setItem(DEV_STORE_KEY, stringified)
+
+
+	function formatDecimal(num: number): number {
+		return +num.toFixed(2)
 	}
 
+	const DEV_STORE_KEY = 'dev-cache'
+	const POINTS_CACHE_KEY = 'points-cache'
+	const SUPPORT_CACHE_KEY = 'support-cache'
+
+	// todo: gets and updates are very WET - we could probably simplify this.
 	function getDevelopers() {
 		const defaultDevelopers = Array.from({length: 5}, developerFactory)
 		if (isWindowUndefined()) return defaultDevelopers
@@ -125,17 +128,48 @@
 		}
 	}
 
-	function formatDecimal(num: number): number {
-		return +num.toFixed(2)
+	function getAveragePoints(): number {
+		const DEFAULT_POINTS = 1
+		if (isWindowUndefined()) return DEFAULT_POINTS
+		// null cast to number is 0
+		const points = +localStorage.getItem(POINTS_CACHE_KEY)
+		if (!points) return DEFAULT_POINTS
+		return points
 	}
 
-	let avgPoints = 1
-	let support = false
+	function getOnSupport(): boolean {
+		const DEFAULT_SUPPORT = false
+		if (isWindowUndefined()) return DEFAULT_SUPPORT
+		const onSupport = localStorage.getItem(SUPPORT_CACHE_KEY)
+		if (!onSupport) return DEFAULT_SUPPORT
+		return onSupport === 'true'
+	}
+
+	function updateDevelopers() {
+		if (isWindowUndefined()) return
+		const stringified = JSON.stringify(developers)
+		localStorage.setItem(DEV_STORE_KEY, stringified)
+	}
+
+	function updateAvgPoints() {
+		if (isWindowUndefined()) return
+		localStorage.setItem(POINTS_CACHE_KEY, avgPoints?.toString())
+	}
+
+	function updateOnSupport() {
+		if (isWindowUndefined()) return
+		localStorage.setItem(SUPPORT_CACHE_KEY, support.toString())
+	}
+
+	let avgPoints = getAveragePoints()
+	let support = getOnSupport()
 	let developers = getDevelopers()
 
 	$: totalDevDays = developers.map(dev => dev.devDays).reduce((acc, cur) => acc + cur, 0)
 	$: totalWithBuffer = formatDecimal(totalDevDays * 0.85)
 	$: totalWithSupportBuffer = support ? formatDecimal(totalWithBuffer * 0.95) : totalWithBuffer
 	$: developers, updateDevelopers()
+	$: avgPoints, updateAvgPoints()
+	$: support, updateOnSupport()
 
 </script>
