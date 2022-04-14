@@ -48,8 +48,9 @@
 		</section>
 	</main>
 </template>
-<script lang="typescript">
-	import InfoItem from '../components/InfoItem.svelte'
+<script lang="ts">
+	import InfoItem from '../components/InfoItem.svelte';
+
 	interface Developer {
 		name: string
 		daysHoliday: number
