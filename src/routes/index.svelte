@@ -16,10 +16,10 @@
 					<tbody>
 						{#each developers as dev, i}
 						<tr class="grid grid-cols-5 gap-2 p-2 border-b">
-							<td><input class="font-semibold p-2 border-white border-2 hover:border-gray-200" bind:value={dev.name}/></td>
-							<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysWorking} on:input={recalculateDevDaysFactory(i)} /></td>
-							<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysHoliday} on:input={recalculateDevDaysFactory(i)} /></td>
-							<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysOtherCommitment} on:input={recalculateDevDaysFactory(i)} /></td>
+							<td><input class="max-w-full font-semibold p-2 border-white border-2 hover:border-gray-200" bind:value={dev.name}/></td>
+							<td><input class="max-w-full p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysWorking} on:input={recalculateDevDaysFactory(i)} /></td>
+							<td><input class="max-w-full p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysHoliday} on:input={recalculateDevDaysFactory(i)} /></td>
+							<td><input class="max-w-full p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysOtherCommitment} on:input={recalculateDevDaysFactory(i)} /></td>
 							<td><p class="p-2 border-white border-2 hover:border-gray-200 cursor-not-allowed">{dev.devDays}</p></td>
 						</tr>
 						{/each}
