@@ -1,37 +1,55 @@
 <template>
-	<header>
-		<ul class="grid grid-cols-5 my-2 gap-2">
-			<li class="text-xl">Developer</li>
-			<li class="text-xl">Days Spent Working</li>
-			<li class="text-xl">Days Holiday</li>
-			<li class="text-xl">Days With Other Commitments</li>
-			<li class="text-xl">Days for Development</li>
-		</ul>
-	</header>
-	<ul>
-		{#each developers as dev, i}
-		<li class="grid grid-cols-5 gap-2 my-2">
-			<input bind:value={dev.name}/>
-			<input type=number bind:value={dev.daysWorking} on:input={() => recalculateDevDays(i)} />
-			<input type=number bind:value={dev.daysHoliday} on:input={() => recalculateDevDays(i)} />
-			<input type=number bind:value={dev.daysOtherCommitment} on:input={() => recalculateDevDays(i)} />
-			<p> {dev.devDays} </p>
-		</li>
-		{/each}
-	</ul>
+	<main class="grid grid-rows-2 content-between h-full">
+		<section class="container mx-auto">
+			<table class="mt-4 border rounded-md shadow w-full">
+				<thead>
+					<tr class="grid grid-cols-5 py-4 gap-2 border-b bg-gray-100">
+						<th class="font-semibold">Developer</th>
+						<th class="font-semibold">Days Spent Working</th>
+						<th class="font-semibold">Days Holiday</th>
+						<th class="font-semibold">Days With Other Commitments</th>
+						<th class="font-semibold">Days for Development</th>
+					</tr>
+				</thead>
 
-	<p>Total dev days: {totalDevDays}</p>
-	<p>Total with buffer: {totalWithBuffer}</p>
-	<p>Are we on support? <button on:click={toggleSupport}>{support ? 'yes' : 'no'}</button></p>
-	<p class={support ? '' : 'hidden'}>Total with support buffer: {totalWithSupportBuffer}</p> 
-	<p>Average points per dev day: <input type=number bind:value={avgPoints} /></p>
-	<p>Guideline sprint points: {avgPoints * totalWithSupportBuffer}</p>
+				<tbody>
+					{#each developers as dev, i}
+					<tr class="grid grid-cols-5 gap-2 p-2 border-b">
+						<td><input class="font-semibold p-2 border-white border-2 hover:border-gray-200" bind:value={dev.name}/></td>
+						<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysWorking} on:input={recalculateDevDaysFactory(i)} /></td>
+						<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysHoliday} on:input={recalculateDevDaysFactory(i)} /></td>
+						<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysOtherCommitment} on:input={recalculateDevDaysFactory(i)} /></td>
+						<td><p class="p-2 border-white border-2 hover:border-gray-200 cursor-not-allowed"> {dev.devDays} </p></td>
+					</tr>
+					{/each}
+				</tbody>
+			</table>
 
-	<button on:click={addDeveloper}>Add Developer</button>
-	<button on:click={removeDeveloper}>Remove Developer</button>
+			<section class="pt-8 container mx-auto">
+				<h1 class="text-2xl">Outcomes:</h1>
+				<div class="grid grid-cols-4 py-4 gap-8">
+					<InfoItem text="Total dev days" icon="📆">{totalDevDays}</InfoItem>
+					<InfoItem text="Total with buffer" icon="🗓️"> {totalWithBuffer}</InfoItem>
+					<InfoItem text="Are we on support?" icon="🔥">
+						<button class="bg-gray-200 mt-2 px-2 py-1 rounded-md shadow-sm w-3/5 hover:bg-gray-100 transition duration-300" on:click={toggleSupport}>{support ? 'yes' : 'no'}</button>
+					</InfoItem>
+					<InfoItem className={support ? '' : 'hidden'} text="Total with support buffer" icon="🧰">{totalWithSupportBuffer}</InfoItem> 
+					<InfoItem text="Avg points per dev day" icon="📲">
+						<input class="border rounded px-2 py-1 mt-2 w-4/5" type=number bind:value={avgPoints} />
+					</InfoItem>
+					<InfoItem text="Guideline sprint points" icon="💻"><p class="inline" on:click={copyPoints}>{avgPoints * totalWithSupportBuffer}</p></InfoItem>
+				</div>
+			</section>
+		</section>
 
+		<section class="self-end flex justify-around py-8 bg-gray-100">
+			<button class="hover:bg-gray-300 transition duration-300 py-2 px-8 rounded" on:click={addDeveloper}>Add Developer</button>
+			<button class="hover:bg-gray-300 transition duration-300 py-2 px-8 rounded" on:click={removeDeveloper}>Remove Developer</button>
+		</section>
+	</main>
 </template>
-<script lang="ts">
+<script lang="typescript">
+	import InfoItem from '../components/InfoItem.svelte'
 	interface Developer {
 		name: string
 		daysHoliday: number
@@ -43,15 +61,25 @@
 	
 	const DEV_STORE_KEY = 'dev-cache'
 
+	function getTotalPoints(): number {
+		return avgPoints * totalWithSupportBuffer
+	}
+
+	function copyPoints() {
+		return navigator.clipboard.writeText(getTotalPoints().toString())
+	}
+
 	function isWindowUndefined(): boolean {
 		return typeof window === 'undefined'
 	}
 
-	function recalculateDevDays(idx: number) {
-		const dev = developers[idx]
-		dev.devDays = dev.daysWorking - (dev.daysOtherCommitment + dev.daysHoliday)
-		// needed for reactivity
-		developers = developers
+	function recalculateDevDaysFactory(idx: number) {
+		return function recalculateDevDays() {
+			const dev = developers[idx]
+			dev.devDays = dev.daysWorking - (dev.daysOtherCommitment + dev.daysHoliday)
+			// needed for reactivity
+			developers = developers
+		}
 	}
 
 	function developerFactory(): Developer {
