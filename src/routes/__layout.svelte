@@ -54,7 +54,7 @@
 </script>
 
 <svelte:head>
-  <title></title>
+  <title>{title}</title>
   {#each meta as tag}
     <meta name={tag.name} content={tag.content} />
   {/each}
