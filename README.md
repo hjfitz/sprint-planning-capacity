@@ -1,4 +1,4 @@
-# 🏃‍♂️ Spring Planning
+# 🏃‍♂️ Sprint Planning
 
 > Small Svelte webapp to get you planning your team capacity better
 
