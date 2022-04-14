@@ -2,6 +2,7 @@
   import "../app.css";
   const metaDescription = "Sprint point planning - Enter your team and their activities and get a rough estimate for the remainder of the week"
   const title = "Scrum Team Planning"
+  const canon = "https://sprint-planning.hjf.io/"
   const meta = [
         {
           name: "description",
