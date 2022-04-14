@@ -1,29 +1,31 @@
 <template>
-	<main class="grid auto-rows-min content-between min-h-full">
+	<main class="grid auto-rows-min content-between min-h-full ">
 		<section class="container mx-auto">
-			<table class="mt-4 border rounded-md shadow w-full">
-				<thead>
-					<tr class="grid grid-cols-5 py-4 gap-2 border-b bg-gray-100">
-						<th class="font-semibold">Developer</th>
-						<th class="font-semibold">Days Spent Working</th>
-						<th class="font-semibold">Days Holiday</th>
-						<th class="font-semibold">Days With Other Commitments</th>
-						<th class="font-semibold">Days for Development</th>
-					</tr>
-				</thead>
+			<div class="overflow-y-auto max-w-[100vw]">
+				<table class="mt-4 border rounded-md shadow w-full min-w-[640px]">
+					<thead>
+						<tr class="grid grid-cols-5 py-4 gap-2 border-b bg-gray-100">
+							<th class="font-semibold">Developer</th>
+							<th class="font-semibold">Days Spent Working</th>
+							<th class="font-semibold">Days Holiday</th>
+							<th class="font-semibold">Days With Other Commitments</th>
+							<th class="font-semibold">Days for Development</th>
+						</tr>
+					</thead>
 
-				<tbody>
-					{#each developers as dev, i}
-					<tr class="grid grid-cols-5 gap-2 p-2 border-b">
-						<td><input class="font-semibold p-2 border-white border-2 hover:border-gray-200" bind:value={dev.name}/></td>
-						<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysWorking} on:input={recalculateDevDaysFactory(i)} /></td>
-						<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysHoliday} on:input={recalculateDevDaysFactory(i)} /></td>
-						<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysOtherCommitment} on:input={recalculateDevDaysFactory(i)} /></td>
-						<td><p class="p-2 border-white border-2 hover:border-gray-200 cursor-not-allowed">{dev.devDays}</p></td>
-					</tr>
-					{/each}
-				</tbody>
-			</table>
+					<tbody>
+						{#each developers as dev, i}
+						<tr class="grid grid-cols-5 gap-2 p-2 border-b">
+							<td><input class="font-semibold p-2 border-white border-2 hover:border-gray-200" bind:value={dev.name}/></td>
+							<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysWorking} on:input={recalculateDevDaysFactory(i)} /></td>
+							<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysHoliday} on:input={recalculateDevDaysFactory(i)} /></td>
+							<td><input class="p-2 border-white border-2 hover:border-gray-200" type=number bind:value={dev.daysOtherCommitment} on:input={recalculateDevDaysFactory(i)} /></td>
+							<td><p class="p-2 border-white border-2 hover:border-gray-200 cursor-not-allowed">{dev.devDays}</p></td>
+						</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
 
 			<section class="pt-8 container mx-auto">
 				<h1 class="text-2xl">Outcomes:</h1>
