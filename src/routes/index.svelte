@@ -1,5 +1,5 @@
 <template>
-	<main class="grid grid-rows-2 content-between h-full">
+	<main class="grid auto-rows-min content-between min-h-full">
 		<section class="container mx-auto">
 			<table class="mt-4 border rounded-md shadow w-full">
 				<thead>
@@ -27,11 +27,11 @@
 
 			<section class="pt-8 container mx-auto">
 				<h1 class="text-2xl">Outcomes:</h1>
-				<div class="grid grid-cols-4 py-4 gap-8">
+				<div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 py-4 gap-8">
 					<InfoItem text="Total dev days" icon="📆">{totalDevDays}</InfoItem>
 					<InfoItem text="Total with buffer" icon="🗓️"> {totalWithBuffer}</InfoItem>
 					<InfoItem text="Are we on support?" icon="🔥">
-						<button class="bg-gray-200 mt-2 px-2 py-1 rounded-md shadow-sm w-3/5 hover:bg-gray-100 transition duration-300" on:click={toggleSupport}>{support ? 'yes' : 'no'}</button>
+						<button class="bg-gray-200 mt-2 px-2 py-1 rounded-md shadow w-3/5 hover:bg-gray-100 transition duration-300" on:click={toggleSupport}>{support ? 'yes' : 'no'}</button>
 					</InfoItem>
 					<InfoItem className={support ? '' : 'hidden'} text="Total with support buffer" icon="🧰">{totalWithSupportBuffer}</InfoItem> 
 					<InfoItem text="Avg points per dev day" icon="📲">
@@ -42,9 +42,9 @@
 			</section>
 		</section>
 
-		<section class="self-end flex justify-around py-8 bg-gray-100">
-			<button class="hover:bg-gray-300 transition duration-300 py-2 px-8 rounded" on:click={addDeveloper}>Add Developer</button>
-			<button class="hover:bg-gray-300 transition duration-300 py-2 px-8 rounded" on:click={removeDeveloper}>Remove Developer</button>
+		<section class="self-end flex justify-around sm:flex-row items-center flex-col py-8 bg-gray-100">
+			<button class="hover:bg-gray-300 bg-gray-200 my-2 w-64 shadow transition duration-300 py-2 px-8 rounded" on:click={addDeveloper}>Add Developer</button>
+			<button class="hover:bg-gray-300 bg-gray-200 my-2 w-64 shadow transition duration-300 py-2 px-8 rounded" on:click={removeDeveloper}>Remove Developer</button>
 		</section>
 	</main>
 </template>
